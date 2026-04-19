@@ -2,15 +2,14 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { addTask } from '@/app/actions/tasks'
 import TaskRow from '@/app/components/TaskRow'
-import FilterTabs from '@/app/components/FilterTabs' // 1. IMPORT TABS
+import FilterTabs from '@/app/components/FilterTabs'
+import RealtimeTasks from '@/app/components/RealtimeTasks' // <--- 1. IMPORTED HERE
 
-// 2. UPDATED FUNCTION SIGNATURE: Added searchParams to the page
 export default async function Dashboard({
   searchParams,
 }: {
   searchParams: Promise<{ sector?: string }>
 }) {
-  // 3. RESOLVE PARAMS: Get the active sector from the URL
   const resolvedParams = await searchParams
   const activeSector = resolvedParams?.sector || 'ALL'
 
@@ -18,7 +17,6 @@ export default async function Dashboard({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return redirect('/login')
 
-  // 4. DYNAMIC QUERY: Filter database based on the URL parameter
   let query = supabase
     .from('tasks')
     .select('*')
@@ -31,7 +29,7 @@ export default async function Dashboard({
   const { data: tasks } = await query
 
   // ==========================================
-  // ANALYTICS ENGINE (Now acts on filtered data)
+  // ANALYTICS ENGINE
   // ==========================================
   const totalTasks = tasks?.length || 0
   const completedTasks = tasks?.filter((t) => t.status === 'COMPLETED').length || 0
@@ -48,6 +46,9 @@ export default async function Dashboard({
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-zinc-100 p-8 font-sans">
+      
+      <RealtimeTasks /> {/* <--- 2. INJECTED HERE (The Live Ear) */}
+
       <nav className="flex justify-between items-center mb-12 border-b border-zinc-800 pb-4">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -97,7 +98,6 @@ export default async function Dashboard({
 
         {/* TASK LOGS */}
         <section className="space-y-4">
-          {/* 5. ADDED TABS: Placed here for UX */}
           <FilterTabs /> 
 
           <div className="border border-zinc-800 rounded-lg overflow-hidden bg-zinc-900/10">
