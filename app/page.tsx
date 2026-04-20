@@ -66,21 +66,21 @@ export default async function Dashboard({
         
         {/* THE UPLINK FORM - Now Dynamic & Soft */}
         <section className="glass-card p-6">
-          <form action={addTask} className="flex flex-col md:flex-row gap-4 items-center">
+          <form action={addTask} className="flex flex-col md:flex-row gap-4 items-center w-full">
             <input 
               name="title" 
-              placeholder="What do you need to achieve?" 
+              placeholder="What is the objective?" 
               required 
-              className="glass-input flex-1"
+              className="glass-input w-full md:w-3/5"
             />
             <input 
               name="category" 
-              placeholder="Tag (e.g., Fitness, Work)" 
+              placeholder="Tag (e.g., UPSC, GSOC)" 
               required 
-              className="glass-input w-full md:w-48"
+              className="glass-input w-full md:w-1/5 uppercase"
             />
-            <button type="submit" className="glass-button w-full md:w-auto">
-              Add Task
+            <button type="submit" className="glass-button w-full md:w-1/5">
+              Deploy
             </button>
           </form>
         </section>
