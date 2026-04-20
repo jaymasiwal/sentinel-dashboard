@@ -129,6 +129,22 @@ export default async function Dashboard({
           </div>
         </section>
       </main>
+      <footer className="max-w-5xl mx-auto w-full mt-16 pt-8 border-t border-slate-200/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+          <span>All Systems Operational</span>
+        </div>
+        
+        <div className="flex gap-6 font-medium">
+          <span className="hover:text-slate-600 cursor-pointer transition-colors">v1.0.0</span>
+          <span className="hover:text-slate-600 cursor-pointer transition-colors">Privacy</span>
+          <span className="hover:text-slate-600 cursor-pointer transition-colors">Terms</span>
+        </div>
+        
+        <div>
+          &copy; {new Date().getFullYear()} Sentinel System. All rights reserved.
+        </div>
+      </footer>
     </div>
   )
 }
