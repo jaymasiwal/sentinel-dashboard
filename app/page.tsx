@@ -18,24 +18,27 @@ export default async function Dashboard({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return redirect('/login')
 
-  let query = supabase
+  // Fetch ALL tasks to generate dynamic tabs and metrics
+  const { data: allTasks } = await supabase
     .from('tasks')
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (activeSector !== 'ALL') {
-    query = query.eq('category', activeSector)
-  }
+  // Extract unique categories (e.g., automatically finds "CIVIL SERVICE EXAM 27")
+  const uniqueCategories = Array.from(new Set(allTasks?.map(t => t.category) || []))
 
-  const { data: tasks } = await query
+  // Filter the table view based on the clicked tab
+  const displayTasks = activeSector === 'ALL' 
+    ? allTasks 
+    : allTasks?.filter(t => t.category === activeSector)
 
-  const totalTasks = tasks?.length || 0
-  const completedTasks = tasks?.filter((t) => t.status === 'COMPLETED').length || 0
+  const totalTasks = allTasks?.length || 0
+  const completedTasks = allTasks?.filter((t) => t.status === 'COMPLETED').length || 0
   const successRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   let topSector = 'None'
-  if (tasks && tasks.length > 0) {
-    const counts = tasks.reduce((acc, task) => {
+  if (allTasks && allTasks.length > 0) {
+    const counts = allTasks.reduce((acc, task) => {
       acc[task.category] = (acc[task.category] || 0) + 1
       return acc
     }, {} as Record<string, number>)
@@ -45,7 +48,6 @@ export default async function Dashboard({
   return (
     <div className="flex flex-col min-h-screen p-6 md:p-12 relative overflow-hidden">
       
-      {/* Soft Background Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-100/40 blur-3xl -z-10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-100/40 blur-3xl -z-10"></div>
 
@@ -64,7 +66,6 @@ export default async function Dashboard({
 
       <main className="max-w-5xl mx-auto w-full space-y-8">
         
-        {/* THE UPLINK FORM - Now Dynamic & Soft */}
         <section className="glass-card p-6">
           <form action={addTask} className="flex flex-col md:flex-row gap-4 items-center w-full">
             <input 
@@ -85,7 +86,6 @@ export default async function Dashboard({
           </form>
         </section>
 
-        {/* DYNAMIC METRICS BOXES */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glass-card p-8 flex flex-col items-center justify-center text-center">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Total Modules</p>
@@ -101,9 +101,9 @@ export default async function Dashboard({
           </div>
         </section>
 
-        {/* TASK LOGS */}
         <section className="space-y-4">
-          <FilterTabs /> 
+          {/* We now pass the live categories down to the tabs */}
+          <FilterTabs categories={uniqueCategories} /> 
 
           <div className="glass-card overflow-hidden">
             <table className="w-full text-left text-sm">
@@ -116,12 +116,12 @@ export default async function Dashboard({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/50 text-slate-600">
-                {tasks?.map((task) => (
+                {displayTasks?.map((task) => (
                   <TaskRow key={task.id} task={task} />
                 ))}
               </tbody>
             </table>
-            {tasks?.length === 0 && (
+            {displayTasks?.length === 0 && (
               <div className="p-12 text-center text-slate-400">
                 Your workspace is empty. Add an objective to begin.
               </div>
