@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import { addTask } from '@/app/actions/tasks'
 import TaskRow from '@/app/components/TaskRow'
 import FilterTabs from '@/app/components/FilterTabs'
-import RealtimeTasks from '@/app/components/RealtimeTasks' // <--- 1. IMPORTED HERE
+import RealtimeTasks from '@/app/components/RealtimeTasks' 
+import LogoutButton from '@/app/components/LogoutButton'
 
 export default async function Dashboard({
   searchParams,
@@ -56,6 +57,7 @@ export default async function Dashboard({
         </div>
         <div className="flex items-center gap-4 text-zinc-500 text-sm font-mono">
           <span>{user.email}</span>
+          <LogoutButton />
         </div>
       </nav>
 
