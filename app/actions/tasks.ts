@@ -5,15 +5,25 @@ import { revalidatePath } from "next/cache"
 export async function addTask(formData: FormData) {
     const supabase = await createClient()
 
+    // 1. Authenticate the exact user making the request
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Unauthorized')
+
     const title = formData.get('title') as string
     let category = formData.get('category') as string
 
-    // Sanitization: Forces "fitness goal" to become "FITNESS GOAL"
+    // 2. Sanitization: Forces "fitness goal" to become "FITNESS GOAL"
     category = category ? category.trim().toUpperCase() : 'GENERAL'
 
+    // 3. Inject the payload WITH the user_id attached
     const { error } = await supabase
         .from('tasks')
-        .insert([{ title, category, status: 'PENDING'}])
+        .insert([{ 
+            title, 
+            category, 
+            status: 'PENDING',
+            user_id: user.id   // <-- THIS IS THE CRITICAL FIX
+        }])
 
     if(error){
         console.error('ERROR_UPLINK_FAILED', error.message)
