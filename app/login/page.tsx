@@ -1,4 +1,5 @@
 import { login, signup } from '@/app/login/actions'
+import Link from 'next/link'
 
 export default function LoginPage() {
   return (
@@ -9,7 +10,11 @@ export default function LoginPage() {
           <p className="text-zinc-500 text-sm">Enter credentials to bypass the perimeter.</p>
         </div>
         <input id="email" name="email" type="email" placeholder="Email" required className="p-2 bg-zinc-800 rounded border border-zinc-700 outline-none focus:ring-1 focus:ring-white" />
-        <input id="password" name="password" type="password" placeholder="Password" required className="p-2 bg-zinc-800 rounded border border-zinc-700 outline-none focus:ring-1 focus:ring-white" />
+        <div className="flex justify-end mt-2 mb-4">
+  <Link href="/forgot-password" className="text-xs text-neutral-400 hover:text-white transition-colors">
+    Forgot password?
+  </Link>
+</div>
         <button formAction={login} className="bg-white text-black p-2 rounded font-bold hover:bg-zinc-200 transition">Log In</button>
         <button formAction={signup} className="text-zinc-400 text-sm hover:text-white transition">Sign Up</button>
       </form>
