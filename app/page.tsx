@@ -50,13 +50,16 @@ export default async function Dashboard({
 
       <RealtimeTasks />
 
-      <nav className="flex justify-between items-center mb-12 max-w-5xl mx-auto w-full">
-        <div className="flex items-center gap-3">
-          <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-          <h1 className="text-xl font-semibold tracking-tight text-slate-800">Workspace</h1>
+      <nav className="flex justify-between items-center mb-8 md:mb-12 max-w-5xl mx-auto w-full">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
+          <h1 className="text-lg md:text-xl font-semibold tracking-tight text-slate-800">Workspace</h1>
         </div>
-        <div className="flex items-center gap-6 text-sm">
-          <span className="text-slate-500">{user.email}</span>
+        <div className="flex items-center gap-3 md:gap-6 text-sm">
+          {/* MOBILE FIX: Hide email on mobile, show on sm screens and up */}
+          <span className="hidden sm:inline-block text-slate-500 truncate max-w-[150px] md:max-w-none">
+            {user.email}
+          </span>
           <LogoutButton />
         </div>
       </nav>
