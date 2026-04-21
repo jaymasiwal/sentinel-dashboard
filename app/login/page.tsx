@@ -9,7 +9,6 @@ export default function LoginPage() {
         <p className="text-neutral-500 text-sm mb-8">Enter credentials to bypass the perimeter.</p>
 
         <form className="flex flex-col gap-4">
-          {/* EMAIL FIELD */}
           <input
             name="email"
             type="email"
@@ -18,7 +17,6 @@ export default function LoginPage() {
             className="w-full p-3 rounded-lg bg-neutral-800 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all"
           />
           
-          {/* PASSWORD FIELD - FORCED VISIBLE */}
           <div className="flex flex-col gap-2">
             <input
               name="password"
@@ -29,7 +27,7 @@ export default function LoginPage() {
               className="w-full p-3 rounded-lg bg-neutral-800 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all"
             />
             <div className="text-right">
-              <Link href="/forgot-password" size="sm" className="text-xs text-neutral-500 hover:text-white transition-colors">
+              <Link href="/forgot-password" className="text-xs text-neutral-500 hover:text-white transition-colors">
                 Forgot password?
               </Link>
             </div>
