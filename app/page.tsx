@@ -18,16 +18,13 @@ export default async function Dashboard({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return redirect('/login')
 
-  // Fetch ALL tasks to generate dynamic tabs and metrics
   const { data: allTasks } = await supabase
     .from('tasks')
     .select('*')
     .order('created_at', { ascending: false })
 
-  // Extract unique categories (e.g., automatically finds "CIVIL SERVICE EXAM 27")
   const uniqueCategories = Array.from(new Set(allTasks?.map(t => t.category) || []))
 
-  // Filter the table view based on the clicked tab
   const displayTasks = activeSector === 'ALL' 
     ? allTasks 
     : allTasks?.filter(t => t.category === activeSector)
@@ -46,7 +43,7 @@ export default async function Dashboard({
   }
 
   return (
-    <div className="flex flex-col min-h-screen p-6 md:p-12 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen p-4 md:p-12 relative overflow-hidden">
       
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-100/40 blur-3xl -z-10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-100/40 blur-3xl -z-10"></div>
@@ -66,21 +63,21 @@ export default async function Dashboard({
 
       <main className="max-w-5xl mx-auto w-full space-y-8">
         
-        <section className="glass-card p-6">
+        <section className="glass-card p-4 md:p-6">
           <form action={addTask} className="flex flex-col md:flex-row gap-4 items-center w-full">
             <input 
               name="title" 
               placeholder="What is the objective?" 
               required 
-              className="glass-input w-full md:w-3/5"
+              className="glass-input w-full md:flex-1"
             />
             <input 
               name="category" 
               placeholder="Tag (e.g., UPSC, GSOC)" 
               required 
-              className="glass-input w-full md:w-1/5 uppercase"
+              className="glass-input w-full md:w-48 uppercase"
             />
-            <button type="submit" className="glass-button w-full md:w-1/5">
+            <button type="submit" className="glass-button w-full md:w-auto px-8">
               Deploy
             </button>
           </form>
@@ -102,33 +99,36 @@ export default async function Dashboard({
         </section>
 
         <section className="space-y-4">
-          {/* We now pass the live categories down to the tabs */}
           <FilterTabs categories={uniqueCategories} /> 
 
           <div className="glass-card overflow-hidden">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider">
-                  <th className="p-5 font-medium">Objective</th>
-                  <th className="p-5 font-medium">Tag</th>
-                  <th className="p-5 font-medium">Status</th>
-                  <th className="p-5 font-medium text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100/50 text-slate-600">
-                {displayTasks?.map((task) => (
-                  <TaskRow key={task.id} task={task} />
-                ))}
-              </tbody>
-            </table>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                <thead>
+                  <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider">
+                    <th className="p-4 md:p-5 font-medium">Objective</th>
+                    <th className="p-4 md:p-5 font-medium">Tag</th>
+                    <th className="p-4 md:p-5 font-medium">Status</th>
+                    <th className="p-4 md:p-5 font-medium text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100/50 text-slate-600">
+                  {displayTasks?.map((task) => (
+                    <TaskRow key={task.id} task={task} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
             {displayTasks?.length === 0 && (
-              <div className="p-12 text-center text-slate-400">
+              <div className="p-8 md:p-12 text-center text-slate-400">
                 Your workspace is empty. Add an objective to begin.
               </div>
             )}
           </div>
         </section>
       </main>
+      
       <footer className="max-w-5xl mx-auto w-full mt-16 pt-8 border-t border-slate-200/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
